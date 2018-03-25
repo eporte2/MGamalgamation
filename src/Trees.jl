@@ -1,14 +1,18 @@
+## This code was provided by Daniel Harasim (github: dharasim)
+## I updated some type definitions and added the remove_child! and replace_child! function
+
 module Trees
 
 importall Base
 
 export Tree, EmptyTree, TreeNode,
-       isterminal, insert_child!,
+       isterminal, insert_child!, remove_child!, replace_child!,
        tree, lisp_tree_structure, parenthesis_to_brackets,
        start, next, done, eltype,
        leafs, leaf_data
 
-abstract Tree{T}
+abstract type Tree{T}
+end
 
 type EmptyTree{T} <: Tree{T}
 end
@@ -43,6 +47,24 @@ end
 function insert_child!(tree::TreeNode, child::TreeNode)
     child.parent = tree
     push!(tree.children, child)
+end
+
+function remove_child!(tree::TreeNode, child::TreeNode)
+    for i in 1:length(tree.children)
+        if tree.children[i] == child
+            deleteat!(tree.children, i)
+            break
+        end
+    end
+end
+
+function replace_child!(tree::TreeNode, old_child::TreeNode, new_child::TreeNode)
+    for i in 1:length(tree.children)
+        if tree.children[i] == old_child
+            tree.children[i] = new_child
+            break
+        end
+    end
 end
 
 function tree(str::String)
